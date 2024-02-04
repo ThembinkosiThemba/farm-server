@@ -1,5 +1,6 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import numpy as np
+from flask_cors import CORS
 import pickle
 
 # importing model
@@ -8,14 +9,20 @@ sc = pickle.load(open('standscaler.pkl', 'rb'))
 ms = pickle.load(open('minmaxscaler.pkl', 'rb'))
 
 # creating flask app
-app = Flask(__name__, template_folder='')
+# creating flask app
+app = Flask(__name__)
+CORS(app, resources={r"/predict": {"origins": "http://localhost:5173"}})
 
-@app.route('/')
-def index():
-    return render_template("index.html")
+
+
+# @app.route('/')
+# def index():
+#     return render_template("index.html")
 
 @app.route("/predict", methods=['POST'])
 def predict():
+    print("hello")
+    print("Recieved POST request:" , request.form)
     N = request.form['Nitrogen']
     P = request.form['Phosporus']
     K = request.form['Potassium']
@@ -44,7 +51,8 @@ def predict():
     else:
         result = "Sorry, we could not determine the best crop to be cultivated with the provided data."
 
-    return render_template('index.html', result=result)
+    # return render_template('index.html', result=result)
+    return jsonify({"result": result})
 
 # python main
 if __name__ == "__main__":
