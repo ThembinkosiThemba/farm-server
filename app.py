@@ -13,8 +13,6 @@ ms = pickle.load(open('minmaxscaler.pkl', 'rb'))
 app = Flask(__name__)
 CORS(app, resources={r"/predict": {"origins": "http://localhost:5173"}})
 
-
-
 # @app.route('/')
 # def index():
 #     return render_template("index.html")
